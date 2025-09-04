@@ -2,337 +2,449 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Code Playground – HTML/CSS/JS Online Editor</title>
+  <title>webTune1 Online Code Studio</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #6c63ff;
-      --bg: #f7fafc;
-      --bg-dark: #181a23;
-      --panel: #fff;
-      --panel-dark: #22242e;
-      --border: #e0e0e0;
-      --border-dark: #2c2c36;
-      --text: #23272f;
-      --text-dark: #f7fafc;
       --accent: #fdcb6e;
-      --radius: 13px;
+      --bg: #f7fafc;
+      --bg-dark: #161820;
+      --panel: #fff;
+      --panel-dark: #23243a;
+      --border: #e0e0e0;
+      --border-dark: #33354a;
+      --radius: 17px;
+      --shadow: 0 2px 16px #d4d4d4a8;
     }
-    body {
+    html, body {
+      height: 100%;
+      margin: 0; padding: 0;
       font-family: 'Figtree', Arial, sans-serif;
       background: var(--bg);
-      color: var(--text);
-      margin: 0; padding: 0;
-      min-height: 100vh;
+      color: #23243a;
       transition: background 0.3s, color 0.3s;
     }
-    .dark {
+    body.dark {
       background: var(--bg-dark);
-      color: var(--text-dark);
+      color: #f7fafc;
     }
     header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 6px 18px;
       background: var(--primary);
       color: #fff;
-      padding: 22px 0 12px 0;
-      text-align: center;
-      font-size: 1.5rem;
-      letter-spacing: 1px;
-      font-weight: 800;
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 18px;
-      position: relative;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 25px;
+      min-height: 55px;
+      box-shadow: 0 4px 22px #6c63ff24;
     }
-    .theme-btn {
-      position: absolute;
-      top: 18px; right: 18px;
+    .brand { font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; }
+    .nav-btn {
       background: #fff8;
       border: none;
       border-radius: 50%;
-      width: 36px; height: 36px;
+      width: 38px; height: 38px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.16rem;
-      cursor: pointer;
-      box-shadow: 0 1px 4px #bbb2;
+      font-size: 1.25rem; cursor: pointer;
+      margin-left: 8px;
       transition: background 0.2s;
     }
-    .theme-btn:hover { background: #fff; }
-    .dark .theme-btn { background: #222c; color: #ffd700;}
-    .playground {
-      max-width: 1250px;
-      margin: 24px auto 30px auto;
-      display: flex;
-      gap: 19px;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 0 10px;
-    }
-    .panel {
-      background: var(--panel);
-      border-radius: var(--radius);
-      box-shadow: 0 2px 12px #e2e2e2a0;
-      border: 1.5px solid var(--border);
-      flex: 1 1 270px;
-      min-width: 270px;
-      max-width: 380px;
+    .nav-btn:hover { background: #fff; }
+    .dark .nav-btn { background: #23243a; color: #fdcb6e;}
+    .sidebar {
+      width: 190px;
+      background: #fff;
+      border-right: 1.5px solid var(--border);
+      position: fixed; top: 70px; left: 0; bottom: 0;
+      z-index: 11;
+      padding: 10px 7px 0 7px;
+      transition: background 0.3s, border 0.3s;
+      box-shadow: 2px 0 14px #eaeaea18;
       display: flex;
       flex-direction: column;
-      height: 360px;
-      position: relative;
-      transition: background 0.3s, color 0.3s, border 0.3s;
+      gap: 4px;
     }
-    .dark .panel {
-      background: var(--panel-dark);
-      border: 1.5px solid var(--border-dark);
-      color: var(--text-dark);
+    .dark .sidebar { background: #23243a; border-right: 1.5px solid var(--border-dark);}
+    .sidebar h3 { margin: 8px 0 11px 13px; font-size: 1.04rem; color: var(--primary);}
+    .sidebar button, .sidebar a {
+      background: none; border: none;
+      font-size: 1.04rem; color: #555;
+      margin-bottom: 5px; text-align: left;
+      cursor: pointer; border-radius: 8px;
+      padding: 7px 11px; display: block;
+      width: 100%; font-family: inherit;
+      transition: background 0.18s, color 0.18s;
+      text-decoration: none;
     }
-    .panel-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      background: #f3f3ff;
-      color: var(--primary);
-      padding: 10px 16px 6px 16px;
-      border-top-left-radius: var(--radius);
-      border-top-right-radius: var(--radius);
-      letter-spacing: 1px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 8px;
+    .sidebar button.selected, .sidebar a.selected, .sidebar button:hover, .sidebar a:hover {
+      background: var(--primary); color: #fff;
     }
-    .dark .panel-title { background: #23243a; color: #fdcb6e; border-bottom: 1px solid var(--border-dark);}
-    .code-area {
-      flex: 1;
-      resize: none;
-      font-family: 'Figtree', 'Consolas', monospace;
-      font-size: 1rem;
-      background: transparent;
-      color: inherit;
-      border: none;
-      padding: 11px 13px 11px 16px;
-      outline: none;
-      width: 100%;
-      height: 100%;
-      border-radius: 0 0 var(--radius) var(--radius);
-      transition: background 0.3s, color 0.3s;
-    }
-    .panel-controls {
+    .dark .sidebar button, .dark .sidebar a { color: #ffe6e6;}
+    .dark .sidebar button.selected, .dark .sidebar a.selected, .dark .sidebar button:hover, .dark .sidebar a:hover {
+      background: var(--accent); color: #23243a;}
+    .main-area {
+      margin-left: 190px; /* sidebar width */
+      padding: 24px 0 0 0;
+      min-height: 90vh;
       display: flex;
-      gap: 8px;
-      position: absolute;
-      right: 10px;
-      top: 12px;
+      flex-direction: column;
     }
-    .btn-sm {
+    .tab-bar {
+      display: flex;
+      gap: 5px;
+      padding: 0 0 7px 0;
+      border-bottom: 1.5px solid var(--border);
+      align-items: center;
+      background: transparent;
+      margin-left: 18px;
+      min-height: 40px;
+    }
+    .tab {
       background: #f3f3ff;
-      color: var(--primary);
+      color: #23243a;
+      font-size: 1.06rem;
+      border-radius: 9px 9px 0 0;
+      padding: 8px 18px 6px 18px;
+      margin-right: 3px;
       border: none;
-      border-radius: 7px;
-      padding: 3px 11px;
-      font-size: 0.96rem;
       cursor: pointer;
-      transition: background 0.18s;
       font-family: inherit;
+      border-bottom: 2.7px solid transparent;
+      transition: background 0.17s, color 0.17s, border 0.17s;
+      position: relative;
     }
-    .btn-sm:hover { background: #e1e1fa;}
-    .dark .btn-sm { background: #393a4a; color: #fdcb6e;}
-    .dark .btn-sm:hover { background: #23243a;}
-    .run-btn {
-      background: var(--primary);
-      color: #fff;
-      font-weight: 600;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 9px;
-      padding: 10px 36px;
-      margin: 24px auto 0 auto;
-      display: block;
-      cursor: pointer;
-      transition: background 0.16s;
-      box-shadow: 0 2px 12px #6c63ff15;
+    .tab.selected { background: var(--primary); color: #fff; border-bottom: 2.7px solid var(--accent);}
+    .dark .tab { background: #23243a; color: #ffe6e6;}
+    .dark .tab.selected { background: var(--accent); color: #23243a;}
+    .tab .close-btn {
+      background: none; border: none; color: #aaa;
+      font-size: 1.1rem; position: absolute; right: 6px; top: 2px; cursor: pointer;
+      padding: 0; margin: 0;
     }
-    .run-btn:hover { background: #5248d6; }
-    .preview-panel {
-      max-width: 1200px;
-      margin: 35px auto 0 auto;
-      background: var(--card);
+    .tab.selected .close-btn { color: #fff; }
+    .dark .tab .close-btn { color: #666;}
+    .dark .tab.selected .close-btn { color: #23243a;}
+    .editor-area {
+      display: flex;
+      min-height: 340px;
+      flex: 1;
+      position: relative;
+      background: #f7fafc;
       border-radius: var(--radius);
-      box-shadow: 0 2px 13px #6c63ff14;
-      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 14px #e3eaff22;
+      margin: 0 21px 0 21px;
       overflow: hidden;
+      border: 1.5px solid var(--border);
       transition: background 0.3s, border 0.3s;
     }
-    .dark .preview-panel { background: #23272f; border: 1.5px solid var(--border-dark);}
+    .dark .editor-area { background: #161820; border: 1.5px solid var(--border-dark);}
+    .editor-pane {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex; flex-direction: column;
+      position: relative;
+      background: transparent;
+      height: 100%;
+      transition: background 0.3s;
+    }
+    .resizer {
+      width: 7px;
+      cursor: ew-resize;
+      background: linear-gradient(90deg, #eee 45%, #ccc 55%);
+      transition: background 0.2s;
+      z-index: 1;
+    }
+    .dark .resizer { background: linear-gradient(90deg, #23243a 45%, #393a4a 55%);}
+    .preview-pane {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex; flex-direction: column;
+      border-left: 1.5px solid var(--border);
+      transition: border 0.3s;
+      background: #fff;
+    }
+    .dark .preview-pane { border-left: 1.5px solid var(--border-dark); background: #23243a;}
     .preview-title {
-      font-size: 1.08rem;
+      font-size: 1.01rem;
       color: var(--primary);
-      padding: 9px 18px 5px 18px;
       background: #f3f3ff;
-      border-bottom: 1px solid var(--border);
+      padding: 6px 13px 4px 13px;
       font-weight: 700;
       letter-spacing: 1px;
+      border-bottom: 1.5px solid var(--border);
     }
-    .dark .preview-title { background: #23243a; color: #fdcb6e; border-bottom: 1px solid var(--border-dark);}
-    .preview-area {
-      background: #fff;
-      width: 100%;
-      min-height: 290px;
+    .dark .preview-title { background: #23243a; color: #fdcb6e; border-bottom: 1.5px solid var(--border-dark);}
+    .preview-frame {
+      flex: 1;
       border: none;
+      width: 100%;
+      min-height: 220px;
+      background: #fff;
       transition: background 0.3s;
       display: block;
     }
-    .dark .preview-area { background: #181a23;}
-    .tips {
-      max-width: 1200px;
-      margin: 26px auto 0 auto;
-      padding: 17px 20px;
-      background: #eaf2ff;
-      border-radius: 11px;
-      color: #23272f;
-      font-size: 1.05rem;
-      box-shadow: 0 2px 12px #e3eaff22;
+    .dark .preview-frame { background: #161820;}
+    .console-panel {
+      background: #222;
+      color: #fff;
+      min-height: 65px;
+      max-height: 120px;
+      font-family: 'Figtree', 'Consolas', monospace;
+      font-size: 1.04rem;
+      border-top: 2px solid #eee;
+      padding: 10px 13px 11px 15px;
+      overflow-y: auto;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
     }
-    .dark .tips { background: #262937; color: #fff;}
-    .footer {
-      text-align: center;
-      color: #aaa;
-      margin: 32px 0 14px 0;
-      font-size: 1rem;
+    .dark .console-panel { background: #181a23; color: #ffe6e6; border-top: 2px solid #23243a;}
+    .bottom-bar {
+      position: fixed;
+      z-index: 100;
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      box-shadow: 0 -2px 16px #a5a5f02f;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 56px;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      padding: 0 16vw 0 16vw;
     }
+    .dark .bottom-bar { background: #23243a;}
+    .bottom-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px 6px 0 6px;
+      transition: color 0.18s;
+      border-radius: 10px;
+    }
+    .bottom-btn.selected,
+    .bottom-btn:active { color: #fff; background: var(--primary);}
+    .dark .bottom-btn { color: #ffe6e6;}
+    .dark .bottom-btn.selected,
+    .dark .bottom-btn:active { color: #23243a; background: #ffe6e6;}
+    .bottom-label { font-size: 0.85rem; margin-top: 1px;}
+    /* Music widget */
+    .music-widget {
+      margin: 0 21px 13px 21px;
+      background: #f7f8ff;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 12px #e2e2e2a0;
+      padding: 13px 24px;
+      display: flex; flex-direction: row; align-items: center; gap: 22px;
+      font-size: 1.04rem;
+    }
+    .dark .music-widget { background: #22242e; color: #fdcb6e;}
+    .music-widget a {
+      color: var(--primary); text-decoration: none; font-weight: 700; margin-left: 5px;
+    }
+    .dark .music-widget a { color: #fdcb6e;}
     @media (max-width: 1100px) {
-      .playground { flex-direction: column; gap: 16px; }
-      .panel, .preview-panel { max-width: 99vw; min-width: 0; }
-      .preview-panel { margin-top: 22px;}
+      .main-area { margin-left: 0;}
+      .sidebar { position: static; width: 100%; min-height: 52px; flex-direction: row; border-right: none; border-bottom: 1.5px solid var(--border);}
+      .dark .sidebar { border-bottom: 1.5px solid var(--border-dark);}
+      .tab-bar { margin-left: 7px;}
+      .editor-area, .music-widget { margin-left: 0; margin-right: 0;}
     }
-    @media (max-width: 600px) {
-      .panel { min-width: 0; }
-      .preview-panel, .tips { padding: 7px 2vw;}
+    @media (max-width: 700px) {
+      .editor-area { flex-direction: column; }
+      .resizer { width: 100%; height: 7px; cursor: ns-resize;}
+      .preview-pane { border-left: none; border-top: 1.5px solid var(--border);}
+      .dark .preview-pane { border-top: 1.5px solid var(--border-dark);}
+    }
+    @media (max-width: 500px) {
       header { font-size: 1.08rem;}
-      .panel-title { font-size: 0.97rem; padding-left: 10px;}
-      .run-btn { font-size: 1rem; padding: 9px 13vw;}
-    }
-    @media (max-width: 400px) {
-      .panel-title { font-size: 0.89rem;}
-      .run-btn { font-size: 0.93rem; padding: 8px 5vw;}
+      .tab-bar { font-size: 0.93rem;}
+      .music-widget { padding: 8px 3vw;}
     }
   </style>
+  <!-- Monaco Editor CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 </head>
 <body>
   <header>
-    <span>Code Playground</span>
-    <button class="theme-btn" id="themeBtn" title="Toggle Dark/Light">
-      <span id="themeIcon">🌙</span>
-    </button>
-    <div style="font-size:1rem;font-weight:400;margin-top:8px;">
-      Write & Run HTML, CSS, JS — Like VS Code, in your browser!
-    </div>
+    <span class="brand">webTune1 Online Code Studio</span>
+    <span>
+      <button class="nav-btn" id="themeBtn" title="Toggle Dark/Light"><span id="themeIcon">🌙</span></button>
+      <button class="nav-btn" onclick="location.reload()" title="Reload App">⟳</button>
+      <button class="nav-btn" onclick="downloadAll()" title="Download as ZIP">⬇️</button>
+    </span>
   </header>
-  <div class="playground">
-    <!-- HTML Panel -->
-    <div class="panel" id="htmlPanel">
-      <div class="panel-title" id="htmlTitle">
-        <span>HTML</span>
-        <div class="panel-controls">
-          <button class="btn-sm" onclick="copyCode('html')">Copy</button>
-          <button class="btn-sm" onclick="clearCode('html')">Clear</button>
-        </div>
-      </div>
-      <textarea id="htmlCode" class="code-area" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+  <nav class="sidebar" id="sidebar">
+    <button onclick="addTab('index.html')" class="selected">+ New File</button>
+    <button onclick="openFile('index.html')">index.html</button>
+    <button onclick="openFile('style.css')">style.css</button>
+    <button onclick="openFile('script.js')">script.js</button>
+    <a href="https://webtune1.github.io/Music" target="_blank">🎵 Music</a>
+  </nav>
+  <div class="main-area" id="mainArea">
+    <div class="tab-bar" id="tabBar">
+      <!-- Tabs will be inserted here -->
     </div>
-    <!-- CSS Panel -->
-    <div class="panel" id="cssPanel">
-      <div class="panel-title" id="cssTitle">
-        <span>CSS</span>
-        <div class="panel-controls">
-          <button class="btn-sm" onclick="copyCode('css')">Copy</button>
-          <button class="btn-sm" onclick="clearCode('css')">Clear</button>
-        </div>
+    <div class="editor-area" id="editorArea">
+      <div class="editor-pane" id="editorPane">
+        <!-- Monaco Editor here -->
+        <div id="editor" style="width:100%;height:100%;min-height:340px;"></div>
       </div>
-      <textarea id="cssCode" class="code-area" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+      <div class="resizer" id="resizer"></div>
+      <div class="preview-pane" id="previewPane">
+        <div class="preview-title">Preview <button onclick="runCode()" style="margin-left:9px;background:var(--primary);color:#fff;border:none;border-radius:7px;padding:3px 13px;font-size:1rem;cursor:pointer;">▶️</button></div>
+        <iframe id="previewFrame" class="preview-frame"></iframe>
+        <div class="console-panel" id="consolePanel"></div>
+      </div>
     </div>
-    <!-- JS Panel -->
-    <div class="panel" id="jsPanel">
-      <div class="panel-title" id="jsTitle">
-        <span>JavaScript</span>
-        <div class="panel-controls">
-          <button class="btn-sm" onclick="copyCode('js')">Copy</button>
-          <button class="btn-sm" onclick="clearCode('js')">Clear</button>
-        </div>
-      </div>
-      <textarea id="jsCode" class="code-area" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+    <div class="music-widget">
+      <span>🎶 Listen while you code:</span>
+      <a href="https://webtune1.github.io/Music" target="_blank">webTune1 Music Player</a>
     </div>
   </div>
-  <button class="run-btn" onclick="runCode()">▶️ Run</button>
-  <div class="preview-panel">
-    <div class="preview-title">Live Preview</div>
-    <iframe id="preview" class="preview-area" sandbox="allow-scripts allow-modals" style="width:100%;height:320px;"></iframe>
-  </div>
-  <div class="tips">
-    <b>Tips:</b>
-    <ul>
-      <li>Write HTML, CSS, and JS in each panel. Click <b>Run</b> to see the result instantly below.</li>
-      <li>Your code is saved automatically in your browser (loads next time).</li>
-      <li>Use <b>Copy</b> to backup code. Use <b>Clear</b> to reset a panel.</li>
-      <li>Try: <b>&lt;h1&gt;Hello!&lt;/h1&gt;</b> and <b>body { color: red; }</b> and <b>alert("Hi!")</b></li>
-      <li>Works great on mobile, too!</li>
-    </ul>
-  </div>
-  <div class="footer">
-    &copy; webTune1 – Code Playground.<br>
-    Edit and save your own code, anytime, anywhere!
-  </div>
+  <nav class="bottom-bar">
+    <button class="bottom-btn selected" onclick="scrollToTop()">
+      <span>🏠</span>
+      <span class="bottom-label">Home</span>
+    </button>
+    <button class="bottom-btn" onclick="addTab('index.html')">
+      <span>📄</span>
+      <span class="bottom-label">Files</span>
+    </button>
+    <button class="bottom-btn" onclick="runCode()">
+      <span>▶️</span>
+      <span class="bottom-label">Run</span>
+    </button>
+    <a class="bottom-btn" href="https://webtune1.github.io/Music" target="_blank">
+      <span>🎵</span>
+      <span class="bottom-label">Music</span>
+    </a>
+  </nav>
   <script>
-    // Theme toggle
-    const themeBtn = document.getElementById('themeBtn');
-    const themeIcon = document.getElementById('themeIcon');
-    function setTheme(mode) {
-      if(mode==='dark') {
-        document.body.classList.add('dark');
-        themeIcon.textContent = "🌞";
-      } else {
-        document.body.classList.remove('dark');
-        themeIcon.textContent = "🌙";
+    // --------- Monaco Editor setup ----------
+    let files = {
+      "index.html": `<!DOCTYPE html>
+<html>
+  <head>
+    <title>My App</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Hello webTune1!</h1>
+    <button onclick="alert('Hello!')">Click Me</button>
+    <script src="script.js"></script>
+  </body>
+</html>`,
+      "style.css": `body { font-family: 'Figtree', Arial, sans-serif; background: #f7fafc; color: #23243a; }
+h1 { color: #6c63ff; }
+button { background: #fdcb6e; color: #23243a; border: none; border-radius: 7px; padding: 7px 19px; cursor: pointer;}
+button:hover { background: #6c63ff; color: #fff; }`,
+      "script.js": `console.log("Hello from JS!");`
+    };
+    let currentFile = "index.html";
+    let editors = {};
+    let tabOrder = ["index.html", "style.css", "script.js"];
+    let monacoInstance, monacoEditor;
+    // Monaco loader
+    window.require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
+    window.require(['vs/editor/editor.main'], function () {
+      monacoInstance = window.monaco;
+      createEditor();
+      updateTabs();
+      loadFile(currentFile);
+      runCode();
+    });
+    function createEditor() {
+      monacoEditor = monacoInstance.editor.create(document.getElementById('editor'), {
+        value: files[currentFile],
+        language: getLang(currentFile),
+        theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
+        fontFamily: 'Figtree,Consolas,monospace',
+        fontSize: 16,
+        minimap: { enabled: false },
+        automaticLayout: true
+      });
+      monacoEditor.onDidChangeModelContent(() => {
+        files[currentFile] = monacoEditor.getValue();
+        saveFiles();
+      });
+    }
+    function getLang(fname) {
+      if (fname.endsWith('.html')) return "html";
+      if (fname.endsWith('.css')) return "css";
+      if (fname.endsWith('.js')) return "javascript";
+      if (fname.endsWith('.json')) return "json";
+      if (fname.endsWith('.md')) return "markdown";
+      return "plaintext";
+    }
+    function loadFile(fname) {
+      if (!files[fname]) files[fname] = "";
+      currentFile = fname;
+      monacoEditor.setValue(files[fname]);
+      monacoInstance.editor.setModelLanguage(monacoEditor.getModel(), getLang(fname));
+      updateTabs();
+    }
+    function addTab(fname) {
+      if (!files[fname]) {
+        files[fname] = "";
+        tabOrder.push(fname);
       }
-      localStorage.setItem('playground-theme', mode);
+      loadFile(fname);
+      updateTabs();
     }
-    themeBtn.onclick = function() {
-      setTheme(document.body.classList.contains('dark')?'light':'dark');
+    function closeTab(fname) {
+      let idx = tabOrder.indexOf(fname);
+      if (idx > -1) tabOrder.splice(idx, 1);
+      if (currentFile === fname) {
+        currentFile = tabOrder[idx-1] || tabOrder[0] || "index.html";
+        loadFile(currentFile);
+      }
+      updateTabs();
     }
-    if(localStorage.getItem('playground-theme')==='dark') setTheme('dark');
-    // Save/load code
-    function saveCode() {
-      localStorage.setItem('playground-html', htmlCode.value);
-      localStorage.setItem('playground-css', cssCode.value);
-      localStorage.setItem('playground-js', jsCode.value);
+    function updateTabs() {
+      let bar = document.getElementById('tabBar');
+      bar.innerHTML = "";
+      tabOrder.forEach(fname => {
+        let btn = document.createElement('button');
+        btn.className = 'tab' + (fname === currentFile ? ' selected' : '');
+        btn.innerHTML = fname + (["index.html","style.css","script.js"].includes(fname) ? "" : `<button class="close-btn" onclick="event.stopPropagation();closeTab('${fname}')">&times;</button>`);
+        btn.onclick = () => loadFile(fname);
+        bar.appendChild(btn);
+      });
     }
-    function loadCode() {
-      htmlCode.value = localStorage.getItem('playground-html') || "";
-      cssCode.value = localStorage.getItem('playground-css') || "";
-      jsCode.value = localStorage.getItem('playground-js') || "";
-    }
-    window.onload = loadCode;
-    // Copy/clear buttons
-    function copyCode(type) {
-      let code = "";
-      if (type === 'html') code = htmlCode.value;
-      if (type === 'css') code = cssCode.value;
-      if (type === 'js') code = jsCode.value;
-      navigator.clipboard.writeText(code);
-      let btns = document.querySelectorAll(`#${type}Panel .btn-sm`);
-      btns[0].textContent = "✓ Copied!";
-      setTimeout(()=>{ btns[0].textContent = "Copy"; }, 1200);
-    }
-    function clearCode(type) {
-      if (type === 'html') htmlCode.value = "";
-      if (type === 'css') cssCode.value = "";
-      if (type === 'js') jsCode.value = "";
-      saveCode();
-    }
-    // Live run
+    // --------- Preview + Console ----------
     function runCode() {
-      saveCode();
-      const html = htmlCode.value || "";
-      const css = cssCode.value || "";
-      const js = jsCode.value || "";
-      const src = `
+      saveFiles();
+      const html = files["index.html"] || "";
+      const css = files["style.css"] || "";
+      const js = files["script.js"] || "";
+      let iframe = document.getElementById('previewFrame');
+      let consolePanel = document.getElementById('consolePanel');
+      let consoleScript = `
+        <script>
+        (function(){
+          let logs = [];
+          function show(type, ...args) {
+            parent.postMessage({type:"console",logType:type,args}, "*");
+          }
+          window.console = {
+            log: (...args) => show("log",...args),
+            error: (...args) => show("error",...args),
+            warn: (...args) => show("warn",...args)
+          };
+          window.onerror = function(msg, url, line, col, error) {
+            show("error",msg+" ("+line+":"+col+")");
+          };
+        })();
+        <\/script>
+      `;
+      iframe.srcdoc = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -342,26 +454,103 @@
         </head>
         <body>
           ${html}
-          <script>${js}<\/script>
+          <script>
+          ${js}
+          <\/script>
+          ${consoleScript}
         </body>
         </html>
       `;
-      const preview = document.getElementById('preview');
-      preview.srcdoc = src;
+      consolePanel.innerHTML = "";
     }
-    // Auto run on load
-    setTimeout(runCode, 210);
-    // Auto save on input
-    htmlCode.oninput = cssCode.oninput = jsCode.oninput = function() {
-      saveCode();
-    }
-    // Keyboard shortcut for Run: Ctrl+Enter
-    window.addEventListener('keydown', function(e){
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        runCode();
-        e.preventDefault();
-      }
+    window.addEventListener("message", function(e){
+      if (!e.data || e.data.type !== "console") return;
+      let cp = document.getElementById('consolePanel');
+      let color = "#eee";
+      if (e.data.logType === "error") color = "#e17055";
+      if (e.data.logType === "warn") color = "#fdcb6e";
+      cp.innerHTML += `<div style="color:${color};margin-bottom:3px;">[${e.data.logType}] ${e.data.args.map(x=>typeof x==="object"?JSON.stringify(x):x).join(" ")}</div>`;
+      cp.scrollTop = cp.scrollHeight;
     });
-  </script>
+    // --------- File/Project Save/Load/Download/Upload ---------
+    function saveFiles() {
+      localStorage.setItem('webtune1-adv-files', JSON.stringify(files));
+      localStorage.setItem('webtune1-adv-tabs', JSON.stringify(tabOrder));
+    }
+    function loadFiles() {
+      let fs = localStorage.getItem('webtune1-adv-files');
+      if (fs) files = JSON.parse(fs);
+      let tabs = localStorage.getItem('webtune1-adv-tabs');
+      if (tabs) tabOrder = JSON.parse(tabs);
+    }
+    loadFiles();
+    // Download all as ZIP (single HTML export for now)
+    function downloadAll() {
+      let zip = {
+        "index.html": files["index.html"] || "",
+        "style.css": files["style.css"] || "",
+        "script.js": files["script.js"] || ""
+      };
+      let html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Exported App</title>
+  <style>${zip["style.css"]}</style>
+</head>
+<body>
+${zip["index.html"]}
+<script>${zip["script.js"]}<\/script>
 </body>
-</html>
+</html>`;
+      let blob = new Blob([html], {type: "text/html"});
+      let a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "project.html";
+      a.click();
+    }
+    // --------- Resizer (drag) ----------
+    let resizer = document.getElementById('resizer');
+    let editorPane = document.getElementById('editorPane');
+    let previewPane = document.getElementById('previewPane');
+    let dragging = false;
+    resizer.addEventListener('mousedown', function(e){
+      dragging = true;
+      document.body.style.cursor = "ew-resize";
+    });
+    document.addEventListener('mousemove', function(e){
+      if (!dragging) return;
+      let total = editorPane.offsetWidth + previewPane.offsetWidth;
+      let x = e.clientX - editorPane.getBoundingClientRect().left;
+      let ratio = x/total;
+      if (ratio < 0.15) ratio = 0.15;
+      if (ratio > 0.85) ratio = 0.85;
+      editorPane.style.flex = ratio;
+      previewPane.style.flex = 1-ratio;
+    });
+    document.addEventListener('mouseup', function(){ dragging = false; document.body.style.cursor = "";});
+    // --------- Theme ---------
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    function setTheme(mode) {
+      if(mode==='dark') {
+        document.body.classList.add('dark');
+        themeIcon.textContent = "🌞";
+        if (window.monaco) monacoInstance.editor.setTheme("vs-dark");
+      } else {
+        document.body.classList.remove('dark');
+        themeIcon.textContent = "🌙";
+        if (window.monaco) monacoInstance.editor.setTheme("vs-light");
+      }
+      localStorage.setItem('webtune1-adv-theme', mode);
+    }
+    themeBtn.onclick = function() {
+      setTheme(document.body.classList.contains('dark')?'light':'dark');
+    }
+    if(localStorage.getItem('webtune1-adv-theme')==='dark') setTheme('dark');
+    // --------- Bottom bar ---------
+    function scrollToTop() { window.scrollTo({top:0,behavior:"smooth"});}
+    // Keyboard shortcuts
+    window.addEventListener('keydown', function(e){
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        saveFiles(); e.prevent
